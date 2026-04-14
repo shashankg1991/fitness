@@ -1,281 +1,245 @@
 'use client';
 import { use, useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ShoppingCart, ChevronDown, ChevronUp, Clock, Flame, Zap } from 'lucide-react';
-import { DIET_PLAN } from '@/lib/dietData';
+import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
+import { DIET_PLAN, type Meal } from '@/lib/dietData';
 
-const THEME_COLORS: Record<string, string> = {
-  'Moong': '#34C759', 'Oats': '#00C7BE', 'Paneer': '#FF9500',
-  'Dosa': '#AF52DE', 'Chole': '#FF6B35', 'Poha': '#FFD60A', 'High': '#FF2D55',
+// Ingredient categories
+type Cat = { label: string; icon: string; color: string; keys: string[] };
+const CATS: Cat[] = [
+  { label:'Proteins',   icon:'🥩', color:'#ff6b35', keys:['paneer','tofu','dal','rajma','chana','chickpea','whey','protein','lentil','moong','masoor','toor','kidney bean'] },
+  { label:'Dairy',      icon:'🥛', color:'#4eb8ff', keys:['milk','curd','yogurt','ghee','buttermilk','lassi','cream'] },
+  { label:'Grains',     icon:'🌾', color:'#ffd60a', keys:['rice','oat','flour','quinoa','bread','poha','ragi','chapati','wheat','millet','semolina','dosa batter'] },
+  { label:'Vegetables', icon:'🥦', color:'#30d158', keys:['tomato','onion','spinach','carrot','pea','mushroom','pepper','ginger','garlic','chilli','palak','broccoli','methi','cucumber','drumstick','lauki','vegetable','sabzi'] },
+  { label:'Fruits & Nuts', icon:'🍌', color:'#bf5af2', keys:['banana','almond','walnut','date','makhana','peanut','cashew','apple','orange','pomegranate','flax','chia','seed','berr','fruit'] },
+  { label:'Spices',     icon:'🌿', color:'#5ac8fa', keys:['cumin','turmeric','chilli','coriander','garam','masala','pepper','cardamom','salt','curry','mustard','ajwain','clove','cinnamon','bay','nutmeg'] },
+];
+
+function categorize(ing: string): Cat {
+  const l = ing.toLowerCase();
+  for (const cat of CATS) {
+    if (cat.keys.some(k => l.includes(k))) return cat;
+  }
+  return { label:'Other', icon:'🧄', color:'rgba(255,255,255,0.4)', keys:[] };
+}
+
+function aggregateIngredients(meals: Meal[]) {
+  const all: string[] = [];
+  meals.forEach(m => { if (m.recipe?.ingredients) all.push(...m.recipe.ingredients); });
+  // Deduplicate loosely by base ingredient word
+  const seen = new Set<string>();
+  const unique: string[] = [];
+  all.forEach(ing => {
+    const base = ing.toLowerCase().replace(/^[\d½⅓¼¾\s\-–tbsp|cup|g|kg|ml|tsp|handful|pinch|bunch|medium|large|small]+/gi,'').trim().split(' ').slice(0,2).join(' ');
+    if (!seen.has(base)) { seen.add(base); unique.push(ing); }
+  });
+  // Group by category
+  const groups: Record<string, { cat: Cat; items: string[] }> = {};
+  unique.forEach(ing => {
+    const cat = categorize(ing);
+    if (!groups[cat.label]) groups[cat.label] = { cat, items: [] };
+    groups[cat.label].items.push(ing);
+  });
+  return Object.values(groups).sort((a,b) => {
+    const order = ['Proteins','Dairy','Grains','Vegetables','Fruits & Nuts','Spices','Other'];
+    return order.indexOf(a.cat.label) - order.indexOf(b.cat.label);
+  });
+}
+
+const THEME_COLOR: Record<string,string> = {
+  'Moong':'#30d158','Oats':'#5ac8fa','Paneer':'#ff9500',
+  'Dosa':'#bf5af2','Chole':'#ff6b35','Poha':'#ffd60a','High':'#ff375f',
+};
+function themeColor(theme: string) {
+  const k = Object.keys(THEME_COLOR).find(k => theme.startsWith(k));
+  return THEME_COLOR[k ?? 'Moong'];
+}
+
+const MEAL_ICONS: Record<string,string> = {
+  Breakfast:'🌅', Snack:'🍎', Lunch:'🍛', 'Pre-Workout':'⚡', Recovery:'💪', Dinner:'🌙',
 };
 
-function getColor(theme: string) {
-  const key = Object.keys(THEME_COLORS).find(k => theme.startsWith(k));
-  return THEME_COLORS[key || 'Moong'];
-}
-
-const MEAL_ICONS: Record<string, string> = {
-  'Breakfast': '🌅', 'Snack': '🍎', 'Lunch': '🍛',
-  'Pre-Workout': '⚡', 'Recovery': '💪', 'Dinner': '🌙',
-};
-
-function RecipeCard({ recipe, color }: { recipe: any; color: string }) {
-  return (
-    <div className="mt-3 rounded-xl overflow-hidden" style={{ background: '#0a0a0f', border: `1px solid ${color}30` }}>
-      <div className="px-4 py-2 flex gap-4 text-xs font-mono" style={{ background: `${color}12` }}>
-        <span style={{ color }}><Flame size={10} className="inline mr-1" />{recipe.calories} kcal</span>
-        <span style={{ color }}><Zap size={10} className="inline mr-1" />{recipe.protein}g protein</span>
-        <span style={{ color: '#8888a0' }}><Clock size={10} className="inline mr-1" />{recipe.prepTime}</span>
-      </div>
-      <div className="grid grid-cols-2 gap-0">
-        <div className="p-3 border-r" style={{ borderColor: `${color}20` }}>
-          <div className="text-xs font-mono mb-2" style={{ color: `${color}99` }}>INGREDIENTS</div>
-          {recipe.ingredients.map((ing: string, i: number) => (
-            <div key={i} className="flex items-start gap-1.5 mb-1">
-              <div className="w-1 h-1 rounded-full mt-1.5 shrink-0" style={{ background: color }} />
-              <span className="text-xs leading-snug" style={{ color: '#c0c0d0' }}>{ing}</span>
-            </div>
-          ))}
-        </div>
-        <div className="p-3">
-          <div className="text-xs font-mono mb-2" style={{ color: `${color}99` }}>METHOD</div>
-          {recipe.steps.map((step: string, i: number) => (
-            <div key={i} className="flex items-start gap-1.5 mb-2">
-              <span className="text-xs font-mono shrink-0 mt-0.5" style={{ color }}>{i + 1}.</span>
-              <span className="text-xs leading-snug" style={{ color: '#c0c0d0' }}>{step}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function MealCard({ meal, color, dayNum }: { meal: any; color: string; dayNum: number }) {
-  const [open, setOpen] = useState(false);
-  const [recipeOpen, setRecipeOpen] = useState(false);
-  const icon = MEAL_ICONS[meal.label] || '🍽️';
-
-  return (
-    <div className="glass2 rounded-2xl overflow-hidden mb-3">
-      <button className="w-full text-left p-4" onClick={() => setOpen(o => !o)}>
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0"
-            style={{ background: `${color}15` }}>
-            {icon}
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-0.5">
-              <span className="text-xs font-mono" style={{ color }}>{meal.time}</span>
-              <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: `${color}15`, color }}>
-                {meal.label}
-              </span>
-            </div>
-            <div className="text-sm font-medium truncate" style={{ color: '#f0f0f5' }}>{meal.name}</div>
-          </div>
-          <div className="text-right shrink-0 ml-2">
-            <div className="text-xs font-mono" style={{ color }}>{meal.proteinG}g</div>
-            <div className="text-xs" style={{ color: '#8888a0' }}>{meal.calories} kcal</div>
-          </div>
-          <div className="ml-2 shrink-0">
-            {open ? <ChevronUp size={16} style={{ color: '#8888a0' }} /> : <ChevronDown size={16} style={{ color: '#8888a0' }} />}
-          </div>
-        </div>
-      </button>
-
-      {open && (
-        <div className="px-4 pb-4 fade-in">
-          {/* Items */}
-          <div className="mb-3">
-            {meal.items.map((item: string, i: number) => (
-              <div key={i} className="flex items-start gap-2 mb-1.5">
-                <div className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ background: color }} />
-                <span className="text-sm" style={{ color: '#c0c0d0' }}>{item}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* Recipe toggle */}
-          {meal.recipe && (
-            <>
-              <button
-                onClick={() => setRecipeOpen(o => !o)}
-                className="text-xs font-mono flex items-center gap-2 py-2 px-3 rounded-lg w-full"
-                style={{ background: `${color}12`, color }}
-              >
-                {recipeOpen ? '▲' : '▼'} {recipeOpen ? 'HIDE RECIPE' : 'SHOW FULL RECIPE'}
-              </button>
-              {recipeOpen && <RecipeCard recipe={meal.recipe} color={color} />}
-            </>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
-export default function DietDayPage({ params }: { params: Promise<{ day: string }> }) {
-  const { day } = use(params);
-  const dayNum = parseInt(day);
-  const dayDiet = DIET_PLAN.find(d => d.day === dayNum);
-  const [tab, setTab] = useState<'meals' | 'shopping'>('meals');
-
-  if (!dayDiet) return <div className="p-6" style={{ color: '#f0f0f5' }}>Day not found</div>;
-
-  const color = getColor(dayDiet.theme);
-  const prevDay = dayNum > 1 ? dayNum - 1 : null;
-  const nextDay = dayNum < 31 ? dayNum + 1 : null;
-
-  return (
-    <main className="min-h-screen" style={{ background: '#0a0a0f' }}>
-      {/* Header */}
-      <div className="relative px-5 pt-10 pb-6" style={{
-        background: `linear-gradient(135deg, ${color}14 0%, transparent 70%)`
-      }}>
-        <div className="flex items-center gap-3 mb-5">
-          <Link href="/diet" className="w-8 h-8 glass rounded-lg flex items-center justify-center">
-            <ArrowLeft size={15} style={{ color: '#f0f0f5' }} />
-          </Link>
-          <div className="flex-1" />
-          {/* Day nav */}
-          <div className="flex items-center gap-2">
-            {prevDay ? (
-              <Link href={`/diet/${prevDay}`} className="text-xs font-mono px-2 py-1 glass rounded-lg" style={{ color: '#8888a0' }}>← {prevDay}</Link>
-            ) : <div className="w-12" />}
-            <div className="font-display text-sm px-3 py-1 rounded-lg" style={{ background: `${color}22`, color }}>
-              DAY {dayNum}
-            </div>
-            {nextDay ? (
-              <Link href={`/diet/${nextDay}`} className="text-xs font-mono px-2 py-1 glass rounded-lg" style={{ color: '#8888a0' }}>{nextDay} →</Link>
-            ) : <div className="w-12" />}
-          </div>
-        </div>
-
-        <div className="font-display text-4xl tracking-wider mb-1" style={{ color }}>{dayDiet.theme.toUpperCase()}</div>
-        <div className="text-sm" style={{ color: '#8888a0' }}>Day {dayNum} of 31</div>
-
-        {/* Macro pills */}
-        <div className="flex gap-2 flex-wrap mt-4">
-          {[
-            { label: 'Protein', val: `${dayDiet.totalProtein}g`, c: '#FF6B35' },
-            { label: 'Calories', val: `${dayDiet.totalCalories}`, c: color },
-            { label: 'Meals', val: `${dayDiet.meals.length}`, c: '#8888a0' },
-          ].map(m => (
-            <div key={m.label} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-              style={{ background: `${m.c}15`, border: `1px solid ${m.c}30` }}>
-              <span className="font-display text-base" style={{ color: m.c }}>{m.val}</span>
-              <span className="text-xs" style={{ color: '#8888a0' }}>{m.label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Tabs */}
-      <div className="px-5 mb-4">
-        <div className="flex glass rounded-xl p-1 gap-1">
-          {(['meals', 'shopping'] as const).map(t => (
-            <button key={t} onClick={() => setTab(t)}
-              className="flex-1 py-2.5 rounded-lg text-sm font-mono transition-all"
-              style={{
-                background: tab === t ? color : 'transparent',
-                color: tab === t ? '#fff' : '#8888a0',
-              }}>
-              {t === 'meals' ? '🍛 Meals' : '🛒 Shopping'}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Meals tab */}
-      {tab === 'meals' && (
-        <div className="px-5">
-          {/* Meal summary strip */}
-          <div className="flex gap-2 mb-5 overflow-x-auto pb-1">
-            {dayDiet.meals.map((m, i) => (
-              <div key={i} className="shrink-0 px-3 py-2 rounded-xl text-center"
-                style={{ background: `${color}12`, border: `1px solid ${color}25`, minWidth: 70 }}>
-                <div className="text-base mb-0.5">{MEAL_ICONS[m.label] || '🍽️'}</div>
-                <div className="text-xs font-mono" style={{ color }}>{m.proteinG}g</div>
-                <div className="text-xs" style={{ color: '#555570' }}>{m.label.split('-')[0]}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* Tip */}
-          <div className="glass rounded-xl px-4 py-3 mb-4 flex items-start gap-2">
-            <div className="text-base shrink-0">💡</div>
-            <div className="text-xs leading-relaxed" style={{ color: '#c0c0d0' }}>
-              <strong style={{ color }}>Rule:</strong> Eat biggest carb meals at breakfast & lunch. Dinner is your lightest meal — always.
-            </div>
-          </div>
-
-          {/* Meal cards */}
-          {dayDiet.meals.map((meal, i) => (
-            <MealCard key={i} meal={meal} color={color} dayNum={dayNum} />
-          ))}
-          <div className="pb-10" />
-        </div>
-      )}
-
-      {/* Shopping tab */}
-      {tab === 'shopping' && (
-        <div className="px-5">
-          <div className="glass2 rounded-2xl p-5 mb-4">
-            <div className="flex items-center gap-2 mb-4">
-              <ShoppingCart size={16} style={{ color }} />
-              <span className="font-mono text-sm" style={{ color }}>DAY {dayNum} SHOPPING LIST</span>
-            </div>
-            <div className="grid grid-cols-1 gap-1">
-              {dayDiet.shopping.map((item, i) => (
-                <ShoppingItem key={i} item={item} color={color} />
-              ))}
-            </div>
-          </div>
-
-          {/* Pantry staples note */}
-          <div className="glass rounded-xl p-4 mb-6">
-            <div className="text-xs font-mono mb-3" style={{ color: '#8888a0' }}>PANTRY STAPLES (keep stocked always)</div>
-            {[
-              'Cumin seeds, mustard seeds, turmeric',
-              'Red chilli powder, coriander powder, garam masala',
-              'Ginger, garlic, green chilli',
-              'Whole wheat flour, brown rice',
-              'Ghee, cold-pressed oil',
-              'Curry leaves, dried red chilli',
-              'Salt, black pepper, chaat masala',
-            ].map((s, i) => (
-              <div key={i} className="flex items-center gap-2 mb-1.5">
-                <div className="w-1 h-1 rounded-full shrink-0" style={{ background: '#555570' }} />
-                <span className="text-xs" style={{ color: '#8888a0' }}>{s}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="pb-10" />
-        </div>
-      )}
-    </main>
-  );
-}
-
-function ShoppingItem({ item, color }: { item: string; color: string }) {
+function CheckItem({ text, color }: { text: string; color: string }) {
   const [checked, setChecked] = useState(false);
   return (
-    <button
-      onClick={() => setChecked(c => !c)}
-      className="flex items-center gap-3 py-2.5 px-3 rounded-xl w-full text-left transition-all"
-      style={{ background: checked ? `${color}12` : 'transparent' }}
-    >
-      <div className="w-4 h-4 rounded flex items-center justify-center shrink-0 transition-all"
-        style={{
-          background: checked ? color : 'transparent',
-          border: `1.5px solid ${checked ? color : '#444'}`,
-        }}>
-        {checked && <span style={{ color: '#fff', fontSize: 10 }}>✓</span>}
+    <button onClick={() => setChecked(c=>!c)} style={{ display:'flex', alignItems:'flex-start', gap:12, padding:'9px 0', background:'none', border:'none', cursor:'pointer', width:'100%', textAlign:'left' }}>
+      <div style={{ width:20, height:20, borderRadius:6, border:`1.5px solid ${checked ? color : 'rgba(255,255,255,0.2)'}`, background: checked ? color : 'transparent', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, marginTop:1, transition:'all 0.15s' }}>
+        {checked && <span style={{color:'#000',fontSize:12,fontWeight:700}}>✓</span>}
       </div>
-      <span className="text-sm" style={{ color: checked ? '#555570' : '#c0c0d0', textDecoration: checked ? 'line-through' : 'none' }}>
-        {item}
+      <span style={{ fontSize:14, color: checked ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.75)', lineHeight:1.5, textDecoration: checked ? 'line-through' : 'none', transition:'all 0.2s' }}>
+        {text}
       </span>
     </button>
+  );
+}
+
+export default function DietDayPage({ params }: { params: Promise<{ day:string }> }) {
+  const { day } = use(params);
+  const dayNum = parseInt(day);
+  const d = DIET_PLAN.find(x => x.day === dayNum);
+  if (!d) return <div style={{color:'#fff',padding:28}}>Not found</div>;
+
+  const color = themeColor(d.theme);
+  const groups = aggregateIngredients(d.meals);
+
+  return (
+    <main style={{ minHeight:'100vh', background:'#09090f', paddingBottom:60 }}>
+
+      {/* ── Header ── */}
+      <div style={{ padding:'48px 24px 28px', background:`linear-gradient(180deg, ${color}12 0%, transparent 100%)` }}>
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:24 }}>
+          <Link href="/diet" style={{ width:36, height:36, borderRadius:18, background:'rgba(255,255,255,0.06)', display:'flex', alignItems:'center', justifyContent:'center', textDecoration:'none' }}>
+            <ArrowLeft size={16} color="rgba(255,255,255,0.7)"/>
+          </Link>
+          <div style={{ display:'flex', gap:8, alignItems:'center' }}>
+            {dayNum > 1 && (
+              <Link href={`/diet/${dayNum-1}`} style={{ width:36,height:36,borderRadius:18,background:'rgba(255,255,255,0.06)',display:'flex',alignItems:'center',justifyContent:'center',textDecoration:'none' }}>
+                <ChevronLeft size={16} color="rgba(255,255,255,0.5)"/>
+              </Link>
+            )}
+            <span className="mono" style={{ fontSize:12, color, padding:'6px 14px', background:`${color}18`, borderRadius:100, border:`1px solid ${color}30` }}>DAY {dayNum}</span>
+            {dayNum < 31 && (
+              <Link href={`/diet/${dayNum+1}`} style={{ width:36,height:36,borderRadius:18,background:'rgba(255,255,255,0.06)',display:'flex',alignItems:'center',justifyContent:'center',textDecoration:'none' }}>
+                <ChevronRight size={16} color="rgba(255,255,255,0.5)"/>
+              </Link>
+            )}
+          </div>
+        </div>
+
+        <h1 className="syne" style={{ fontSize:30, fontWeight:800, color:'#fff', marginBottom:8 }}>{d.theme}</h1>
+
+        {/* Macro row */}
+        <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
+          {[
+            { l:'Protein', v:`${d.totalProtein}g`, c:'#ff6b35' },
+            { l:'Calories', v:`${d.totalCalories}`, c:color },
+            { l:'Meals', v:`${d.meals.length}`, c:'rgba(255,255,255,0.4)' },
+          ].map(m=>(
+            <div key={m.l} style={{ display:'flex', alignItems:'center', gap:6, padding:'7px 14px', background:'rgba(255,255,255,0.05)', borderRadius:100, border:'1px solid rgba(255,255,255,0.08)' }}>
+              <span className="syne" style={{ fontSize:16, fontWeight:700, color:m.c }}>{m.v}</span>
+              <span style={{ fontSize:12, color:'rgba(255,255,255,0.35)' }}>{m.l}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── TODAY'S INGREDIENTS ── */}
+      <section style={{ padding:'0 24px 32px' }}>
+        <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:20 }}>
+          <div style={{ flex:1, height:1, background:'rgba(255,255,255,0.07)' }}/>
+          <span className="mono" style={{ fontSize:10, letterSpacing:3, color:'rgba(255,255,255,0.35)', whiteSpace:'nowrap' }}>WHAT YOU NEED TODAY</span>
+          <div style={{ flex:1, height:1, background:'rgba(255,255,255,0.07)' }}/>
+        </div>
+
+        <div style={{ display:'flex', flexDirection:'column', gap:20 }}>
+          {groups.map(({ cat, items }) => (
+            <div key={cat.label}>
+              <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:10 }}>
+                <span style={{ fontSize:16 }}>{cat.icon}</span>
+                <span className="syne" style={{ fontSize:14, fontWeight:600, color:cat.color }}>{cat.label}</span>
+                <span className="mono" style={{ fontSize:10, color:'rgba(255,255,255,0.2)' }}>{items.length}</span>
+              </div>
+              <div style={{ paddingLeft:4 }}>
+                {items.map((ing,i) => (
+                  <CheckItem key={i} text={ing} color={cat.color}/>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ marginTop:20, padding:'12px 16px', background:'rgba(255,255,255,0.03)', borderRadius:14, border:'1px solid rgba(255,255,255,0.06)' }}>
+          <p style={{ fontSize:12, color:'rgba(255,255,255,0.35)', lineHeight:1.6 }}>
+            🧂 <strong style={{color:'rgba(255,255,255,0.5)'}}>Always keep stocked:</strong> cumin, turmeric, coriander powder, garam masala, red chilli powder, mustard seeds, curry leaves, salt, black pepper, ghee, oil
+          </p>
+        </div>
+      </section>
+
+      {/* ── MEALS ── */}
+      <section style={{ padding:'0 24px' }}>
+        <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:24 }}>
+          <div style={{ flex:1, height:1, background:'rgba(255,255,255,0.07)' }}/>
+          <span className="mono" style={{ fontSize:10, letterSpacing:3, color:'rgba(255,255,255,0.35)', whiteSpace:'nowrap' }}>MEALS FOR THE DAY</span>
+          <div style={{ flex:1, height:1, background:'rgba(255,255,255,0.07)' }}/>
+        </div>
+
+        <div style={{ display:'flex', flexDirection:'column', gap:0 }}>
+          {d.meals.map((meal, mi) => {
+            const mcolor = mi % 2 === 0 ? color : 'rgba(255,255,255,0.5)';
+            const icon = MEAL_ICONS[meal.label] ?? '🍽️';
+            return (
+              <div key={mi} style={{ position:'relative', paddingLeft:32, paddingBottom: mi < d.meals.length-1 ? 36 : 0 }}>
+                {/* Timeline line */}
+                {mi < d.meals.length-1 && (
+                  <div style={{ position:'absolute', left:11, top:28, bottom:0, width:1, background:'rgba(255,255,255,0.07)' }}/>
+                )}
+                {/* Timeline dot */}
+                <div style={{ position:'absolute', left:6, top:8, width:12, height:12, borderRadius:6, background: color, border:'2px solid #09090f' }}/>
+
+                {/* Meal card */}
+                <div style={{ background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:20, overflow:'hidden' }}>
+                  {/* Meal header */}
+                  <div style={{ padding:'16px 18px 12px', borderBottom:'1px solid rgba(255,255,255,0.05)' }}>
+                    <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:6 }}>
+                      <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                        <span style={{ fontSize:18 }}>{icon}</span>
+                        <span className="mono" style={{ fontSize:11, letterSpacing:2, color: color }}>{meal.time}</span>
+                        <span className="mono" style={{ fontSize:10, color:'rgba(255,255,255,0.25)', padding:'2px 8px', background:'rgba(255,255,255,0.05)', borderRadius:100 }}>{meal.label}</span>
+                      </div>
+                      <div style={{ display:'flex', gap:6 }}>
+                        <span className="mono" style={{ fontSize:11, color:'#ff6b35', padding:'3px 8px', background:'rgba(255,107,53,0.1)', borderRadius:100 }}>{meal.proteinG}g P</span>
+                        <span className="mono" style={{ fontSize:11, color:'rgba(255,255,255,0.35)', padding:'3px 8px', background:'rgba(255,255,255,0.05)', borderRadius:100 }}>{meal.calories}</span>
+                      </div>
+                    </div>
+                    <h3 className="syne" style={{ fontSize:17, fontWeight:700, color:'#fff' }}>{meal.name}</h3>
+                  </div>
+
+                  {/* Items */}
+                  <div style={{ padding:'12px 18px', borderBottom:'1px solid rgba(255,255,255,0.05)' }}>
+                    <p className="mono" style={{ fontSize:10, letterSpacing:2, color:'rgba(255,255,255,0.25)', marginBottom:8 }}>WHAT TO EAT</p>
+                    <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+                      {meal.items.map((item,i) => (
+                        <span key={i} style={{ fontSize:13, color:'rgba(255,255,255,0.65)', padding:'5px 10px', background:'rgba(255,255,255,0.05)', borderRadius:8, lineHeight:1.4 }}>
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Recipe */}
+                  {meal.recipe && meal.recipe.steps.length > 0 && (
+                    <div style={{ padding:'12px 18px' }}>
+                      <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:10 }}>
+                        <p className="mono" style={{ fontSize:10, letterSpacing:2, color:'rgba(255,255,255,0.25)' }}>RECIPE</p>
+                        <div style={{ flex:1, height:1, background:'rgba(255,255,255,0.05)' }}/>
+                        <span className="mono" style={{ fontSize:10, color:color }}>{meal.recipe.prepTime}</span>
+                      </div>
+                      {/* Ingredients compact */}
+                      <div style={{ marginBottom:12, display:'flex', flexWrap:'wrap', gap:4 }}>
+                        {meal.recipe.ingredients.map((ing,i)=>(
+                          <span key={i} style={{ fontSize:11, color:'rgba(255,255,255,0.4)', padding:'3px 8px', background:'rgba(255,255,255,0.04)', borderRadius:6, border:'1px solid rgba(255,255,255,0.06)' }}>{ing}</span>
+                        ))}
+                      </div>
+                      {/* Steps */}
+                      <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+                        {meal.recipe.steps.map((step,i)=>(
+                          <div key={i} style={{ display:'flex', gap:10, alignItems:'flex-start' }}>
+                            <div style={{ width:22, height:22, borderRadius:11, background:`${color}20`, border:`1px solid ${color}40`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                              <span className="mono" style={{ fontSize:10, color }}>{i+1}</span>
+                            </div>
+                            <p style={{ fontSize:13, color:'rgba(255,255,255,0.6)', lineHeight:1.6, paddingTop:2 }}>{step}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+    </main>
   );
 }

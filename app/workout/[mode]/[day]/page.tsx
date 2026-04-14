@@ -1,94 +1,62 @@
 'use client';
 import { use } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ChevronRight, Clock, Repeat } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { BRO_SPLIT, PPL_SPLIT } from '@/lib/workoutData';
 
-export default function DayPage({ params }: { params: Promise<{ mode: string; day: string }> }) {
+const SEC_META: Record<string,{icon:string;color:string;dur:string}> = {
+  warmup:   { icon:'🌅', color:'#ffd60a', dur:'5 min' },
+  main:     { icon:'🏋️', color:'',        dur:'25–35 min' },
+  abs:      { icon:'🎯', color:'#5ac8fa', dur:'15 min' },
+  cooldown: { icon:'🌊', color:'#4eb8ff', dur:'8 min' },
+  backpain: { icon:'🔄', color:'#bf5af2', dur:'10 min' },
+};
+
+export default function DayPage({ params }: { params: Promise<{mode:string;day:string}> }) {
   const { mode, day } = use(params);
-  const split = mode === 'ppl' ? PPL_SPLIT : BRO_SPLIT;
-  const dayData = split.find(d => d.day === parseInt(day));
-
-  if (!dayData) return <div className="p-6 text-white">Day not found</div>;
-
-  const sectionColors: Record<string, string> = {
-    warmup: '#F5C842', main: dayData.color, abs: '#00C7BE', cooldown: '#64B4FF', backpain: '#8E8EFF'
-  };
-
-  const sectionDurations: Record<string, string> = {
-    warmup: '5 min', main: '25–35 min', abs: '15 min', cooldown: '8 min', backpain: '10 min'
-  };
+  const split = mode==='ppl' ? PPL_SPLIT : BRO_SPLIT;
+  const d = split.find(x=>x.day===parseInt(day));
+  if (!d) return <div style={{color:'#fff',padding:28}}>Not found</div>;
 
   return (
-    <main className="min-h-screen" style={{background:'#0a0a0f'}}>
-      {/* Header */}
-      <div className="relative px-6 pt-10 pb-8" style={{
-        background:`linear-gradient(135deg, ${dayData.color}18 0%, transparent 60%)`
-      }}>
-        <div className="flex items-center gap-4 mb-6">
-          <Link href="/workout" className="w-8 h-8 glass rounded-lg flex items-center justify-center">
-            <ArrowLeft size={16} style={{color:'#f0f0f5'}}/>
+    <main style={{ minHeight:'100vh', background:'#09090f', paddingBottom:48 }}>
+      {/* Hero */}
+      <div style={{ padding:'48px 24px 32px', background:`linear-gradient(180deg, ${d.color}14 0%, transparent 100%)` }}>
+        <div style={{ display:'flex', alignItems:'center', gap:14, marginBottom:28 }}>
+          <Link href="/workout" style={{ width:36,height:36,borderRadius:18,background:'rgba(255,255,255,0.06)',display:'flex',alignItems:'center',justifyContent:'center',textDecoration:'none' }}>
+            <ArrowLeft size={16} color="rgba(255,255,255,0.7)"/>
           </Link>
-          <div className="text-xs font-mono" style={{color:'#8888a0'}}>
-            {mode.toUpperCase()} SPLIT · DAY {day}
-          </div>
+          <span className="mono" style={{ fontSize:11, color:'rgba(255,255,255,0.35)', letterSpacing:2 }}>{mode.toUpperCase()} · DAY {day}</span>
         </div>
-        <div className="flex items-end justify-between">
-          <div>
-            <div className="font-display text-5xl tracking-wider mb-1" style={{color: dayData.color}}>
-              {dayData.muscle.toUpperCase()}
-            </div>
-            <div className="text-sm" style={{color:'#8888a0'}}>
-              {dayData.sections.find(s=>s.id==='main')?.exercises.length} main exercises · abs · cooldown · back relief
-            </div>
-          </div>
-          <div className="font-display text-lg tracking-widest glass px-4 py-2 rounded-xl" style={{color: dayData.color}}>
-            {dayData.badge}
-          </div>
-        </div>
+        <h1 className="syne" style={{ fontSize:48, fontWeight:800, color:d.color, marginBottom:8 }}>{d.muscle}</h1>
+        <p style={{ fontSize:14, color:'rgba(255,255,255,0.4)' }}>
+          {d.sections.find(s=>s.id==='main')?.exercises.length} exercises · 55–70 min total
+        </p>
       </div>
 
-      {/* Total time estimate */}
-      <div className="mx-6 mb-6 glass rounded-xl p-4 flex items-center gap-3">
-        <Clock size={16} style={{color:'#8888a0'}}/>
-        <div className="text-sm" style={{color:'#f0f0f5'}}>
-          Estimated total: <span style={{color: dayData.color}} className="font-mono">55–70 min</span>
-        </div>
-        <div className="ml-auto text-xs font-mono" style={{color:'#8888a0'}}>all sections</div>
-      </div>
+      {/* Sections list */}
+      <div style={{ padding:'0 24px' }}>
+        <p className="mono" style={{ fontSize:10, letterSpacing:3, color:'rgba(255,255,255,0.25)', marginBottom:16 }}>SECTIONS — TAP TO START</p>
 
-      {/* Sections */}
-      <div className="px-6">
-        <div className="text-xs font-mono mb-4" style={{color:'#8888a0'}}>SELECT A SECTION</div>
-        <div className="flex flex-col gap-3">
-          {dayData.sections.map((section, idx) => {
-            const color = sectionColors[section.id] || dayData.color;
+        <div style={{ display:'flex', flexDirection:'column', gap:10, marginBottom:24 }}>
+          {d.sections.map((sec,i)=>{
+            const meta = SEC_META[sec.id] || SEC_META.main;
+            const c = sec.id==='main' ? d.color : meta.color;
             return (
-              <Link key={section.id} href={`/workout/${mode}/${day}/section/${section.id}`}>
-                <div className="glass2 rounded-2xl p-5 section-card flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 text-2xl"
-                    style={{background:`${color}18`}}>
-                    {section.icon}
+              <Link key={sec.id} href={`/workout/${mode}/${day}/section/${sec.id}`} style={{ textDecoration:'none' }}>
+                <div style={{ display:'flex', alignItems:'center', gap:16, padding:'18px 20px', background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:20 }}>
+                  <div style={{ width:46, height:46, borderRadius:15, background:`${c}18`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:22, flexShrink:0 }}>
+                    {meta.icon}
                   </div>
-                  <div className="flex-1">
-                    <div className="font-display text-xl tracking-wider" style={{color: '#f0f0f5'}}>
-                      {section.title}
-                    </div>
-                    <div className="flex items-center gap-3 mt-1">
-                      <span className="text-xs font-mono" style={{color}}>
-                        {sectionDurations[section.id] || '–'}
-                      </span>
-                      <span className="text-xs" style={{color:'#8888a0'}}>·</span>
-                      <span className="text-xs" style={{color:'#8888a0'}}>
-                        {section.exercises.length} exercise{section.exercises.length !== 1 ? 's' : ''}
-                      </span>
+                  <div style={{ flex:1 }}>
+                    <h3 className="syne" style={{ fontSize:16, fontWeight:700, color:'#fff', marginBottom:3 }}>{sec.title}</h3>
+                    <div style={{ display:'flex', gap:8 }}>
+                      <span className="mono" style={{ fontSize:11, color:c }}>{meta.dur}</span>
+                      <span className="mono" style={{ fontSize:11, color:'rgba(255,255,255,0.25)' }}>{sec.exercises.length} exercises</span>
                     </div>
                   </div>
-                  <div className="flex flex-col items-end gap-1">
-                    <div className="text-xs font-mono" style={{color:'#555570'}}>
-                      Step {idx + 1}
-                    </div>
-                    <ChevronRight size={16} style={{color}}/>
+                  <div style={{ width:28,height:28,borderRadius:14,background:`${c}18`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0 }}>
+                    <span style={{ color:c, fontSize:16 }}>›</span>
                   </div>
                 </div>
               </Link>
@@ -96,14 +64,12 @@ export default function DayPage({ params }: { params: Promise<{ mode: string; da
           })}
         </div>
 
-        {/* Start All button */}
-        <Link href={`/workout/${mode}/${day}/section/${dayData.sections[0].id}`}>
-          <div className="mt-6 rounded-2xl p-4 text-center font-display text-xl tracking-wider cursor-pointer"
-            style={{background: dayData.color, color:'#fff'}}>
-            START WORKOUT
+        {/* Start all CTA */}
+        <Link href={`/workout/${mode}/${day}/section/${d.sections[0].id}`} style={{ textDecoration:'none', display:'block' }}>
+          <div style={{ padding:'18px 0', borderRadius:100, background:d.color, textAlign:'center' }}>
+            <span className="syne" style={{ fontSize:18, fontWeight:800, color:'#fff', letterSpacing:1 }}>Start Workout</span>
           </div>
         </Link>
-        <div className="pb-10"/>
       </div>
     </main>
   );

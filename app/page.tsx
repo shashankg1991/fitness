@@ -1,75 +1,68 @@
 'use client';
 import Link from 'next/link';
-import { Dumbbell, UtensilsCrossed, ChevronRight, Flame } from 'lucide-react';
 
 export default function Home() {
   return (
-    <main className="hero-bg min-h-screen flex flex-col">
-      <header className="px-6 pt-10 pb-6">
-        <div className="flex items-center gap-3 mb-1">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{background:'#FF6B35'}}>
-            <Flame size={16} color="#fff" />
-          </div>
-          <span className="font-display text-2xl tracking-widest text-white">FITCORE</span>
-        </div>
-        <p className="text-sm ml-11" style={{color:'#8888a0'}}>Your complete fitness companion</p>
-      </header>
-      <section className="px-6 py-8">
-        <h1 className="font-display text-6xl leading-none mb-4" style={{color:'#f0f0f5'}}>
-          TRAIN.<br/><span style={{color:'#FF6B35'}}>EAT.</span><br/>REPEAT.
+    <main style={{minHeight:'100vh',background:'#09090f',display:'flex',flexDirection:'column',padding:'0 0 40px'}}>
+      {/* hero */}
+      <div style={{padding:'64px 28px 40px',flex:1,display:'flex',flexDirection:'column',justifyContent:'center'}}>
+        <p className="mono" style={{fontSize:11,letterSpacing:4,color:'rgba(255,255,255,0.3)',marginBottom:20}}>YOUR PERSONAL TRAINER</p>
+        <h1 className="syne" style={{fontSize:52,fontWeight:800,lineHeight:1.05,color:'#fff',marginBottom:12}}>
+          Train.<br/><span style={{color:'#ff6b35'}}>Eat.</span><br/>Repeat.
         </h1>
-        <p style={{color:'#8888a0'}} className="text-base leading-relaxed max-w-sm">
-          Daily workouts with timer, form guides, and abs. 31-day Indian veg diet with full recipes. Built for lean muscle at 35.
+        <p style={{fontSize:15,color:'rgba(255,255,255,0.45)',lineHeight:1.7,maxWidth:300,marginBottom:48}}>
+          Workouts with form guides, auto-timers, and abs. 31-day Indian veg diet with full recipes.
         </p>
-      </section>
-      <div className="mx-6 mb-8 glass rounded-2xl p-4 grid grid-cols-3 gap-4">
-        {[{label:'Days',val:'31',sub:'Diet plan'},{label:'Splits',val:'2',sub:'Training modes'},{label:'Recipes',val:'40+',sub:'Indian veg'}].map(s=>(
-          <div key={s.label} className="text-center">
-            <div className="font-display text-3xl" style={{color:'#FF6B35'}}>{s.val}</div>
-            <div className="font-display text-sm tracking-wider" style={{color:'#f0f0f5'}}>{s.label}</div>
-            <div className="text-xs mt-0.5" style={{color:'#8888a0'}}>{s.sub}</div>
+
+        {/* profile chip */}
+        <div style={{display:'inline-flex',alignItems:'center',gap:8,padding:'10px 16px',background:'rgba(255,255,255,0.05)',borderRadius:100,border:'1px solid rgba(255,255,255,0.08)',marginBottom:48,width:'fit-content'}}>
+          <div style={{width:8,height:8,borderRadius:4,background:'#30d158'}}/>
+          <span className="mono" style={{fontSize:11,color:'rgba(255,255,255,0.45)',letterSpacing:1}}>35 · 73 KG · 5'10" · LEAN MUSCLE</span>
+        </div>
+
+        {/* nav cards */}
+        <div style={{display:'flex',flexDirection:'column',gap:14}}>
+          <Link href="/workout" style={{textDecoration:'none'}}>
+            <div style={{
+              background:'linear-gradient(135deg,rgba(255,107,53,0.12) 0%,rgba(255,107,53,0.04) 100%)',
+              border:'1px solid rgba(255,107,53,0.2)',borderRadius:24,padding:'28px 24px',
+              display:'flex',alignItems:'center',justifyContent:'space-between',
+            }}>
+              <div>
+                <p className="mono" style={{fontSize:10,letterSpacing:3,color:'rgba(255,107,53,0.7)',marginBottom:8}}>WORKOUT</p>
+                <h2 className="syne" style={{fontSize:28,fontWeight:700,color:'#fff',marginBottom:6}}>Daily Training</h2>
+                <p style={{fontSize:13,color:'rgba(255,255,255,0.4)',lineHeight:1.5}}>Bro split or PPL · Auto-timer<br/>Warmup · Abs · Cooldown</p>
+              </div>
+              <div style={{width:52,height:52,borderRadius:16,background:'rgba(255,107,53,0.15)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:24,flexShrink:0}}>🏋️</div>
+            </div>
+          </Link>
+
+          <Link href="/diet" style={{textDecoration:'none'}}>
+            <div style={{
+              background:'linear-gradient(135deg,rgba(48,209,88,0.12) 0%,rgba(48,209,88,0.04) 100%)',
+              border:'1px solid rgba(48,209,88,0.2)',borderRadius:24,padding:'28px 24px',
+              display:'flex',alignItems:'center',justifyContent:'space-between',
+            }}>
+              <div>
+                <p className="mono" style={{fontSize:10,letterSpacing:3,color:'rgba(48,209,88,0.7)',marginBottom:8}}>DIET</p>
+                <h2 className="syne" style={{fontSize:28,fontWeight:700,color:'#fff',marginBottom:6}}>31-Day Meal Plan</h2>
+                <p style={{fontSize:13,color:'rgba(255,255,255,0.4)',lineHeight:1.5}}>Indian vegetarian · No egg<br/>Full recipes · ~135g protein</p>
+              </div>
+              <div style={{width:52,height:52,borderRadius:16,background:'rgba(48,209,88,0.15)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:24,flexShrink:0}}>🥗</div>
+            </div>
+          </Link>
+        </div>
+      </div>
+
+      {/* stats row */}
+      <div style={{margin:'0 28px',display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:10}}>
+        {[['7','Days/Week'],['31','Meal Days'],['2','Splits']].map(([n,l])=>(
+          <div key={l} style={{background:'rgba(255,255,255,0.04)',borderRadius:16,padding:'16px 12px',textAlign:'center',border:'1px solid rgba(255,255,255,0.07)'}}>
+            <div className="syne" style={{fontSize:26,fontWeight:800,color:'#ff6b35'}}>{n}</div>
+            <div style={{fontSize:11,color:'rgba(255,255,255,0.35)',marginTop:3}}>{l}</div>
           </div>
         ))}
       </div>
-      <div className="px-6 flex flex-col gap-4 flex-1">
-        <Link href="/workout">
-          <div className="glass2 rounded-2xl p-6 cursor-pointer" style={{background:'linear-gradient(135deg,rgba(255,107,53,0.08),rgba(255,107,53,0.02))'}}>
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{background:'rgba(255,107,53,0.2)'}}>
-                <Dumbbell size={22} style={{color:'#FF6B35'}}/>
-              </div>
-              <ChevronRight size={20} style={{color:'#FF6B35'}} className="mt-1"/>
-            </div>
-            <h2 className="font-display text-3xl tracking-wider mb-1" style={{color:'#f0f0f5'}}>WORKOUT</h2>
-            <p style={{color:'#8888a0'}} className="text-sm leading-relaxed">Bro split or Push/Pull/Legs. Warmup, main lifts, abs circuit, cooldown & back pain relief every day.</p>
-            <div className="mt-4 flex gap-2 flex-wrap">
-              {['Bro Split','PPL','Timer','Form Guide','Abs Circuit'].map(t=>(
-                <span key={t} className="text-xs px-2 py-1 rounded-full font-mono" style={{background:'rgba(255,107,53,0.12)',color:'#FF9F6B'}}>{t}</span>
-              ))}
-            </div>
-          </div>
-        </Link>
-        <Link href="/diet">
-          <div className="glass2 rounded-2xl p-6 cursor-pointer" style={{background:'linear-gradient(135deg,rgba(52,199,89,0.08),rgba(52,199,89,0.02))'}}>
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{background:'rgba(52,199,89,0.2)'}}>
-                <UtensilsCrossed size={22} style={{color:'#34C759'}}/>
-              </div>
-              <ChevronRight size={20} style={{color:'#34C759'}} className="mt-1"/>
-            </div>
-            <h2 className="font-display text-3xl tracking-wider mb-1" style={{color:'#f0f0f5'}}>DIET PLAN</h2>
-            <p style={{color:'#8888a0'}} className="text-sm leading-relaxed">31-day Indian vegetarian plan. Full recipes, ingredients, macros. ~130-140g protein/day.</p>
-            <div className="mt-4 flex gap-2 flex-wrap">
-              {['31 Days','Indian Veg','No Egg','Recipes','Shopping List'].map(t=>(
-                <span key={t} className="text-xs px-2 py-1 rounded-full font-mono" style={{background:'rgba(52,199,89,0.12)',color:'#5EE87F'}}>{t}</span>
-              ))}
-            </div>
-          </div>
-        </Link>
-      </div>
-      <footer className="px-6 py-8 text-center">
-        <p className="text-xs font-mono" style={{color:'#555570'}}>Age 35 · 73 kg · 5'10" · Goal: Lean Muscle & Abs</p>
-      </footer>
     </main>
   );
 }

@@ -1,13 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
-export const metadata: Metadata = {
-  title: 'FitCore — Workout & Diet',
-  description: 'Personalised lean muscle plan',
-};
+export const metadata: Metadata = { title: 'FitCore', description: 'Workout & Diet' };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <body suppressHydrationWarning>{children}</body>
-    </html>
-  );
+  return <html lang="en" suppressHydrationWarning><body suppressHydrationWarning>{children}</body></html>;
 }
