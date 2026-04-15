@@ -40,7 +40,7 @@ const SHAWARMA_SWAP = {
   name: 'Protein Shawarma Roll',
   proteinG: 24,
   calories: 365,
-  items: ['1 whole wheat roti or wrap', 'Filling: 120g paneer tikka OR soya chunks OR 4 falafel', 'Cabbage, tomato, onion, bell pepper shredded', 'Green chutney or light yogurt-tahini sauce', 'Pinch of chaat masala'],
+  items: ['1 whole wheat roti or wrap', 'Filling: 120g paneer tikka OR soya chunks OR 4 falafel', 'Cabbage, tomato, onion, bell pepper shredded', 'Green chutney or light yogurt-sesame chutney sauce', 'Pinch of chaat masala'],
 };
 
 const SHAWARMA_VARIANTS = [
@@ -60,7 +60,7 @@ const SHAWARMA_VARIANTS = [
     name: 'Falafel Shawarma Roll',
     proteinG: 14,
     calories: 340,
-    items: ['1 whole wheat roti/wrap','4 baked/air-fried falafel patties','Shredded cabbage, tomato, cucumber, onion','2 tbsp hummus + 1 tbsp yogurt-tahini sauce','Lemon juice, parsley, chilli flakes'],
+    items: ['1 whole wheat roti/wrap','4 baked/air-fried falafel patties','Shredded cabbage, tomato, cucumber, onion','2 tbsp chana dip or dal hummus + 1 tbsp yogurt-sesame chutney sauce','Lemon juice, parsley, chilli flakes'],
   },
 ];
 
@@ -75,7 +75,7 @@ const templates: Omit<DayDiet, 'day'>[] = [
       'Chop onion, tomato, green chilli and store in fridge for quick bhurji cooking',
       'Prepare lassi base (curd + water + cumin) and refrigerate',
     ],
-    shopping: ['Moong dal 250g','Paneer 200g','Brown rice 100g','Rajma 200g','Onions 3','Tomatoes 3','Banana 2','Almonds 30g','Greek yogurt 200g','Curd 150g','Whole wheat flour 200g','Spinach 100g','Lemons 2','Ginger','Cumin seeds','Turmeric','Ghee','Green chilli','Coriander'],
+    shopping: ['Moong dal 250g','Paneer 200g','Brown rice 100g','Rajma 200g','Onions 3','Tomatoes 3','Banana 2','Almonds 30g','hung curd (chakka dahi) 200g','Curd 150g','Whole wheat flour 200g','Spinach 100g','Lemons 2','Ginger','Cumin seeds','Turmeric','Ghee','Green chilli','Coriander'],
     meals: [
       {
         time:'7:00 AM', label:'Breakfast', name:'Moong Dal Chilla + Paneer Bhurji',
@@ -135,15 +135,15 @@ const templates: Omit<DayDiet, 'day'>[] = [
     ],
   },
   {
-    theme: 'Oats & Tofu Day',
+    theme: 'Oats & Paneer Day',
     totalProtein: 136, totalCalories: 2070,
     prepAhead: [
       'Make overnight oats the night before — oats + milk + chia + honey in a jar, refrigerate',
-      'Press tofu under a heavy plate for 30 min, cube and marinate in spices — refrigerate overnight',
+      'Cube paneer and marinate in curd + spices overnight — absorbs flavour well, no pressing needed',
       'Pre-cook brown rice and refrigerate — takes 35 min, saves lunch prep time',
       'Wash and sprout moong if using sprouts — takes 2 days, start 2 days ahead',
     ],
-    shopping: ['Rolled oats 80g','Firm tofu 300g','Greek yogurt 200g','Chia seeds 2 tbsp','Banana 2','Peanut butter 2 tbsp','Chickpeas 200g','Spinach 150g','Bell pepper 1','Mushrooms 100g','Quinoa 80g','Flaxseeds 1 tbsp','Lemons 2','Curd 150g','Paneer 80g'],
+    shopping: ['Rolled oats 80g','Paneer 200g or Soya chunks 100g (dry)','hung curd (chakka dahi) 200g','Chia seeds 2 tbsp','Banana 2','Peanut butter 2 tbsp','Chickpeas 200g','Spinach 150g','Bell pepper 1','Mushrooms 100g','Quinoa 80g','Flaxseeds 1 tbsp','Lemons 2','Curd 150g','Paneer 80g'],
     meals: [
       {
         time:'7:00 AM', label:'Breakfast', name:'Overnight Oats + Paneer',
@@ -164,14 +164,14 @@ const templates: Omit<DayDiet, 'day'>[] = [
         recipe:{ protein:12, calories:150, prepTime:'5 min', ingredients:['1 cup moong sprouts','Tomato, cucumber, lemon, chaat masala, salt'], steps:['Mix all. Season. Eat fresh.'] },
       },
       {
-        time:'1:00 PM', label:'Lunch', name:'Tofu Stir-fry + Dal + Rice',
+        time:'1:00 PM', label:'Lunch', name:'Paneer Stir-fry + Dal + Rice',
         proteinG:32, calories:600,
-        items:['150g tofu stir-fried with spinach + bell pepper','¾ cup brown rice','1 cup toor dal','1 glass lassi'],
-        prepAhead: 'Marinate tofu the night before in soy + turmeric + pepper — refrigerate',
+        items:['150g paneer stir-fried with spinach + bell pepper','¾ cup brown rice','1 cup toor dal','1 glass lassi'],
+        prepAhead: 'Marinate paneer cubes in curd + turmeric + red chilli + ginger paste overnight',
         recipe:{
           protein:22, calories:320, prepTime:'20 min',
-          ingredients:['150g firm tofu (pressed, cubed)','1 bell pepper sliced','100g spinach','1 clove garlic','½ tsp soy sauce','¼ tsp black pepper','1 tsp oil','Salt'],
-          steps:['Press and cube tofu. Heat oil, brown tofu 3 min each side.','Add garlic, bell pepper 2 min. Add spinach, wilt.','Add soy sauce, pepper, salt. Serve over rice.'],
+          ingredients:['150g paneer or pressed soya chunks (pressed, cubed)','1 bell pepper sliced','100g spinach','1 clove garlic','½ tsp soy sauce','¼ tsp black pepper','1 tsp oil','Salt'],
+          steps:['Cube paneer. Heat oil, pan-fry paneer until golden on 2 sides (2 min each — no need to press).','Add garlic, bell pepper 2 min. Add spinach, wilt.','Add soy sauce, pepper, salt. Serve over rice.'],
         },
         swapOptions: SHAWARMA_VARIANTS,
       },
@@ -182,10 +182,10 @@ const templates: Omit<DayDiet, 'day'>[] = [
         recipe:{ protein:8, calories:180, prepTime:'2 min', ingredients:['2 rice cakes','2 tbsp peanut butter'], steps:['Spread peanut butter. Eat 30–45 min before workout.'] },
       },
       {
-        time:'Post-Workout', label:'Recovery', name:'Greek Yogurt Bowl',
+        time:'Post-Workout', label:'Recovery', name:'Hung Curd (thick dahi) Bowl',
         proteinG:22, calories:200,
-        items:['200g Greek yogurt','1 tbsp honey','½ banana sliced'],
-        recipe:{ protein:22, calories:200, prepTime:'2 min', ingredients:['200g Greek yogurt','1 tbsp honey','½ banana'], steps:['Mix yogurt and honey. Top with banana. Eat immediately post-workout.'] },
+        items:['200g hung curd (chakka dahi)','1 tbsp honey','½ banana sliced'],
+        recipe:{ protein:22, calories:200, prepTime:'2 min', ingredients:['200g hung curd (chakka dahi)','1 tbsp honey','½ banana'], steps:['Mix yogurt and honey. Top with banana. Eat immediately post-workout.'] },
       },
       {
         time:'8:00 PM', label:'Dinner', name:'Palak Paneer Light + Chapati',
@@ -209,7 +209,7 @@ const templates: Omit<DayDiet, 'day'>[] = [
       'Cook quinoa and refrigerate — takes 15 min, use cold in salads or reheat',
       'Mix paneer paratha dough and refrigerate in cling wrap — rest 8 hrs for best texture',
     ],
-    shopping: ['Paneer 300g','Curd 300g','Brown rice 100g','Chickpeas 200g','Quinoa 80g','Bell peppers 2','Onions 3','Tomatoes 3','Banana 2','Walnuts 30g','Makhana 30g','Whole wheat flour 200g','Garam masala','Red chilli powder','Lemon 3','Greek yogurt 200g'],
+    shopping: ['Paneer 300g','Curd 300g','Brown rice 100g','Chickpeas 200g','Quinoa 80g','Bell peppers 2','Onions 3','Tomatoes 3','Banana 2','Walnuts 30g','Makhana 30g','Whole wheat flour 200g','Garam masala','Red chilli powder','Lemon 3','hung curd (chakka dahi) 200g'],
     meals: [
       {
         time:'7:00 AM', label:'Breakfast', name:'Paneer Paratha + Curd',
@@ -224,10 +224,10 @@ const templates: Omit<DayDiet, 'day'>[] = [
         swapOptions:[SHAWARMA_SWAP],
       },
       {
-        time:'10:00 AM', label:'Snack', name:'Walnuts + Greek Yogurt',
+        time:'10:00 AM', label:'Snack', name:'Walnuts + Hung Curd (thick dahi)',
         proteinG:10, calories:180,
-        items:['150g Greek yogurt','6 walnut halves','1 tsp honey'],
-        recipe:{ protein:10, calories:180, prepTime:'2 min', ingredients:['150g Greek yogurt','6 walnut halves','1 tsp honey'], steps:['Mix yogurt and honey. Top with walnuts.'] },
+        items:['150g hung curd (chakka dahi)','6 walnut halves','1 tsp honey'],
+        recipe:{ protein:10, calories:180, prepTime:'2 min', ingredients:['150g hung curd (chakka dahi)','6 walnut halves','1 tsp honey'], steps:['Mix yogurt and honey. Top with walnuts.'] },
       },
       {
         time:'1:00 PM', label:'Lunch', name:'Paneer Tikka Shawarma Roll',
@@ -275,7 +275,7 @@ const templates: Omit<DayDiet, 'day'>[] = [
       'Cook toor dal and refrigerate — quick to reheat with fresh tadka',
       'Make falafel mix from chickpeas and refrigerate as patties — fry/bake next day',
     ],
-    shopping: ['Soya chunks 150g (dry)','Dosa batter 400g','Paneer 100g','Greek yogurt 200g','Banana 2','Dates 3','Peanuts 30g','Brown rice 80g','Curd 200g','Lemon 2','Toor dal 100g','Spinach 200g','Bell pepper 1','Garam masala','Soy sauce','Chickpeas 200g for falafel'],
+    shopping: ['Soya chunks 150g (dry)','Dosa batter 400g','Paneer 100g','hung curd (chakka dahi) 200g','Banana 2','Dates 3','Peanuts 30g','Brown rice 80g','Curd 200g','Lemon 2','Toor dal 100g','Spinach 200g','Bell pepper 1','Garam masala','Soy sauce','Chickpeas 200g for falafel'],
     meals: [
       {
         time:'7:00 AM', label:'Breakfast', name:'Ragi Dosa + Sambhar',
@@ -341,13 +341,13 @@ const templates: Omit<DayDiet, 'day'>[] = [
       'Mix and refrigerate energy balls (dates + oats + peanut butter) — grab as pre-workout snack',
       'Prep overnight oats or chia pudding in jar — refrigerate before bed',
     ],
-    shopping: ['Chickpeas 200g','Quinoa 150g','Paneer 150g','Greek yogurt 200g','Banana 2','Sweet potato 1','Peanut butter 2 tbsp','Almonds 25g','Curd 200g','Whole wheat flour 150g','Tomatoes 3','Onions 2','Spinach 100g','Makhana 30g','Dates 5','Rolled oats 100g'],
+    shopping: ['Chickpeas 200g','Quinoa 150g','Paneer 150g','hung curd (chakka dahi) 200g','Banana 2','Sweet potato 1','Peanut butter 2 tbsp','Almonds 25g','Curd 200g','Whole wheat flour 150g','Tomatoes 3','Onions 2','Spinach 100g','Makhana 30g','Dates 5','Rolled oats 100g'],
     meals: [
       {
-        time:'7:00 AM', label:'Breakfast', name:'Greek Yogurt Power Bowl',
+        time:'7:00 AM', label:'Breakfast', name:'Hung Curd (thick dahi) Power Bowl',
         proteinG:22, calories:390,
-        items:['200g Greek yogurt','1 tbsp honey','2 tbsp flaxseeds','6 walnuts','Pomegranate seeds','Black coffee'],
-        recipe:{ protein:22, calories:390, prepTime:'3 min', ingredients:['200g Greek yogurt','1 tbsp honey','2 tbsp flaxseeds','6 walnut halves','3 tbsp pomegranate seeds'], steps:['Layer yogurt in bowl. Drizzle honey.','Top with flaxseeds, walnuts, pomegranate seeds.'] },
+        items:['200g hung curd (chakka dahi)','1 tbsp honey','2 tbsp flaxseeds','6 walnuts','Pomegranate seeds','Black coffee'],
+        recipe:{ protein:22, calories:390, prepTime:'3 min', ingredients:['200g hung curd (chakka dahi)','1 tbsp honey','2 tbsp flaxseeds','6 walnut halves','3 tbsp pomegranate seeds'], steps:['Layer yogurt in bowl. Drizzle honey.','Top with flaxseeds, walnuts, pomegranate seeds.'] },
         swapOptions:[SHAWARMA_SWAP],
       },
       {
@@ -402,7 +402,7 @@ const templates: Omit<DayDiet, 'day'>[] = [
       'Prepare chia pudding in jar with milk + honey — refrigerate overnight',
       'Cook mixed dal and refrigerate',
     ],
-    shopping: ['Poha thick 80g','Paneer 250g','Peanuts 50g','Brown rice 80g','Toor dal 100g','Banana 2','Greek yogurt 200g','Curd 200g','Tomatoes 2','Onions 2','Bell pepper 1','Carrots 2','Chickpeas 200g for falafel','Whole wheat flour 200g','Almonds 25g','Dates 2','Lemon 2','Tahini 2 tbsp'],
+    shopping: ['Poha thick 80g','Paneer 250g','Peanuts 50g','Brown rice 80g','Toor dal 100g','Banana 2','hung curd (chakka dahi) 200g','Curd 200g','Tomatoes 2','Onions 2','Bell pepper 1','Carrots 2','Chickpeas 200g for falafel','Whole wheat flour 200g','Almonds 25g','Dates 2','Lemon 2','Sesame paste (til chutney) 2 tbsp'],
     meals: [
       {
         time:'7:00 AM', label:'Breakfast', name:'Poha + Peanuts + Paneer',
@@ -425,12 +425,12 @@ const templates: Omit<DayDiet, 'day'>[] = [
       {
         time:'1:00 PM', label:'Lunch', name:'Falafel Shawarma Roll',
         proteinG:28, calories:580,
-        items:['Falafel shawarma roll (whole wheat roti)','Hummus + yogurt-tahini dip','Salad','Buttermilk'],
+        items:['Falafel shawarma roll (whole wheat roti)','Chana dip or besan-based dip + yogurt-sesame chutney dip','Salad','Buttermilk'],
         prepAhead: 'Make falafel patties night before from soaked chickpeas — bake fresh at lunch time',
         recipe:{
           protein:18, calories:340, prepTime:'30 min (10 if patties are prepped)',
-          ingredients:['1 cup chickpeas (soaked + drained)','2 tbsp chickpea flour','1 garlic clove','1 tsp cumin','½ tsp coriander','Parsley/coriander leaves','Salt','1 whole wheat roti','Shredded cabbage, tomato, cucumber, onion','2 tbsp hummus + 1 tbsp yogurt-tahini sauce'],
-          steps:['Blend chickpeas coarsely. Add chickpea flour, garlic, cumin, coriander, herbs, salt. Do NOT over-blend.','Form into round patties. Refrigerate 30 min to firm up.','Bake at 200°C for 20 min (flip halfway) or air-fry at 190°C for 14 min.','Lay roti flat. Spread hummus, add falafel and vegetables. Drizzle tahini-yogurt sauce. Roll tight.'],
+          ingredients:['1 cup chickpeas (soaked + drained)','2 tbsp chickpea flour','1 garlic clove','1 tsp cumin','½ tsp coriander','Parsley/coriander leaves','Salt','1 whole wheat roti','Shredded cabbage, tomato, cucumber, onion','2 tbsp chana dip or dal hummus + 1 tbsp yogurt-sesame chutney sauce'],
+          steps:['Blend chickpeas coarsely. Add chickpea flour, garlic, cumin, coriander, herbs, salt. Do NOT over-blend.','Form into round patties. Refrigerate 30 min to firm up.','Bake at 200°C for 20 min (flip halfway) or air-fry at 190°C for 14 min.','Lay roti flat. Spread chana dip or dal hummus, add falafel and vegetables. Drizzle sesame chutney-yogurt sauce. Roll tight.'],
         },
         swapOptions: SHAWARMA_VARIANTS,
       },
@@ -468,7 +468,7 @@ const templates: Omit<DayDiet, 'day'>[] = [
       'Pre-cook extra rajma, dal, or quinoa for the coming week — batch cook saves daily effort',
       'Prepare energy balls (dates + oats + peanut butter) — will last the whole week in fridge',
     ],
-    shopping: ['Paneer 300g','Tofu 200g','Greek yogurt 300g','Quinoa 100g','Brown rice 80g','Chickpeas 200g','Banana 2','Dates 3','Peanut butter 2 tbsp','Milk 500ml','Honey 1 tbsp','Spinach 100g','Onions 2','Tomatoes 2','Almonds 30g','Walnuts 20g','Lemon 2','Moong dal 100g'],
+    shopping: ['Paneer 500g','hung curd (chakka dahi) 300g','Quinoa 100g','Brown rice 80g','Chickpeas 200g','Banana 2','Dates 3','Peanut butter 2 tbsp','Milk 500ml','Honey 1 tbsp','Spinach 100g','Onions 2','Tomatoes 2','Almonds 30g','Walnuts 20g','Lemon 2','Moong dal 100g'],
     meals: [
       {
         time:'7:00 AM', label:'Breakfast', name:'Triple Protein Breakfast',
@@ -517,13 +517,13 @@ const templates: Omit<DayDiet, 'day'>[] = [
         recipe:{ protein:32, calories:240, prepTime:'3 min', ingredients:['30g whey','1 banana','250ml cold milk','1 tsp honey'], steps:['Blend until smooth. Drink within 30 min.'] },
       },
       {
-        time:'8:00 PM', label:'Dinner', name:'Light Tofu Curry + Chapati',
+        time:'8:00 PM', label:'Dinner', name:'Light Paneer Curry + Chapati',
         proteinG:16, calories:370,
-        items:['150g tofu in light tomato curry','1 chapati','Salad','1 bowl curd'],
+        items:['150g paneer in light tomato curry','1 chapati','Salad','1 bowl curd'],
         recipe:{
           protein:16, calories:260, prepTime:'20 min',
-          ingredients:['150g firm tofu cubed','2 tomatoes pureed','1 onion','½ tsp cumin','¼ tsp turmeric','½ tsp coriander','1 tsp oil','Salt'],
-          steps:['Sauté onion until golden. Add spices and tomato purée, cook until oil separates.','Add tofu gently. Simmer 8 min. Garnish with coriander.'],
+          ingredients:['150g paneer or pressed soya chunks cubed','2 tomatoes pureed','1 onion','½ tsp cumin','¼ tsp turmeric','½ tsp coriander','1 tsp oil','Salt'],
+          steps:['Sauté onion until golden. Add spices and tomato purée, cook until oil separates.','Add paneer gently. Simmer 6–8 min. Garnish with coriander.'],
         },
       },
     ],
@@ -548,10 +548,10 @@ export const WEEKLY_GROCERY: GroceryCategory[] = [
     name: 'Proteins', icon: '🥩', color: '#ff6b35',
     items: [
       { name: 'Paneer', qty: '700g', note: 'For breakfast bhurji, tikka, sabzi, shawarma' },
-      { name: 'Firm tofu', qty: '400g', note: 'For stir-fry, curry, shawarma' },
+      { name: 'Paneer or soya chunks', qty: '400g', note: 'For stir-fry, curry, shawarma' },
       { name: 'Soya chunks (dry)', qty: '150g', note: 'Soaks to ~4x weight — great protein' },
       { name: 'Veg whey protein', qty: '210g (7 scoops)', note: '30g post-workout daily' },
-      { name: 'Chickpeas (dried)', qty: '300g', note: 'For chole, falafel, hummus' },
+      { name: 'Chickpeas (dried)', qty: '300g', note: 'For chole, falafel, chana dip or dal hummus' },
       { name: 'Rajma (dried)', qty: '200g', note: 'Soak night before use' },
     ],
   },
@@ -559,7 +559,7 @@ export const WEEKLY_GROCERY: GroceryCategory[] = [
     name: 'Dairy', icon: '🥛', color: '#4eb8ff',
     items: [
       { name: 'Low-fat curd', qty: '1kg', note: 'Daily use — dips, marinade, bhurji' },
-      { name: 'Greek yogurt', qty: '400g', note: 'High protein — snacks and recovery' },
+      { name: 'hung curd (chakka dahi)', qty: '400g', note: 'High protein — snacks and recovery' },
       { name: 'Low-fat milk', qty: '1.5 litres', note: 'Protein shakes, oats, haldi milk' },
       { name: 'Buttermilk (or make from curd)', qty: '500ml', note: 'Dinner drink' },
     ],
@@ -615,8 +615,8 @@ export const WEEKLY_GROCERY: GroceryCategory[] = [
       { name: 'Fresh coriander (cilantro)', qty: '2 bunches', note: 'Garnish, chutney' },
       { name: 'Lemons', qty: '8', note: 'Salads, roll dressing, dal' },
       { name: 'Green chutney', qty: 'Make fresh or buy 200ml', note: 'Rolls, chillas' },
-      { name: 'Tahini (sesame paste)', qty: '100g', note: 'Falafel rolls — 1 jar lasts weeks' },
-      { name: 'Soy sauce', qty: '1 bottle', note: 'Tofu and soya marinade' },
+      { name: 'Sesame chutney or til (sesame) paste', qty: '100g', note: 'Falafel rolls — 1 jar lasts weeks' },
+      { name: 'Soy sauce', qty: '1 bottle', note: 'Soya chunks marinade, optional' },
       { name: 'Ghee', qty: '100g', note: 'Cooking, makhana roasting' },
       { name: 'Cold-pressed oil', qty: '500ml', note: 'All cooking' },
       { name: 'Honey', qty: '200g', note: 'Oats, yogurt, smoothies' },
@@ -661,8 +661,8 @@ export const SHAWARMA_INFO = {
     {
       name: 'Falafel Roll',
       protein: '14g', calories: '340', rating: '⭐⭐⭐',
-      pros: ['High fibre', 'Heart healthy', 'Great flavour with tahini'],
-      tip: 'Bake or air-fry, never deep-fry. Pair with extra hummus for more protein.',
+      pros: ['High fibre', 'Heart healthy', 'Great flavour with sesame chutney'],
+      tip: 'Bake or air-fry, never deep-fry. Pair with extra chana dip or dal hummus for more protein.',
     },
   ],
 };

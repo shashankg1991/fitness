@@ -1,81 +1,117 @@
-const API_KEY = 'dc6zaTOxFJmzC';
+// Giphy API - client-side only, public beta key
+const KEY = 'dc6zaTOxFJmzC';
 
-const Q: Record<string, string> = {
-  'bench press': 'dumbbell bench press workout',
-  'incline press': 'incline dumbbell press chest exercise',
-  'chest fly': 'dumbbell chest fly pec exercise',
-  'decline press': 'decline chest press dumbbell exercise',
-  'pull-ups': 'pull ups back exercise gym',
-  'pullups': 'pull ups back exercise gym',
-  'chin-ups': 'chin ups exercise bicep',
-  'bent-over row': 'dumbbell bent over row back exercise',
-  'single-arm row': 'single arm dumbbell row exercise',
-  'reverse fly': 'reverse fly rear delt exercise',
-  'overhead press': 'dumbbell overhead press shoulder',
-  'lateral raise': 'lateral raise shoulder exercise',
-  'front raise': 'front raise shoulder dumbbell',
-  'arnold press': 'arnold press shoulder exercise',
-  'goblet squat': 'goblet squat exercise legs',
-  'romanian deadlift': 'romanian deadlift rdl exercise',
-  'walking lunge': 'walking lunges dumbbell legs',
-  'calf raise': 'calf raise exercise gym',
-  'bulgarian split squat': 'bulgarian split squat legs exercise',
-  'bicep curl': 'dumbbell bicep curl exercise',
-  'hammer curl': 'hammer curl exercise bicep',
-  'concentration curl': 'concentration curl bicep exercise',
-  'incline curl': 'incline dumbbell curl bicep',
-  'zottman curl': 'zottman curl exercise bicep',
-  'overhead tricep': 'overhead tricep extension dumbbell',
-  'tricep kickback': 'tricep kickback exercise dumbbell',
-  'close-grip press': 'close grip press tricep exercise',
-  'skull crusher': 'skull crusher tricep exercise',
-  'wrist curl': 'wrist curl forearm exercise',
-  'wrist extension': 'wrist extension forearm exercise',
-  "farmer": 'farmers walk grip exercise',
-  'wood chop': 'wood chop exercise core rotation',
-  'side bend': 'dumbbell side bend oblique exercise',
-  'russian twist': 'russian twist core exercise',
-  'windmill': 'windmill exercise kettlebell core',
-  'halo': 'halo exercise kettlebell core',
-  'overhead crunch': 'standing oblique crunch exercise',
-  'arm circles': 'arm circles warmup stretch',
-  'shoulder rolls': 'shoulder rolls warmup exercise',
-  'hip circles': 'hip mobility circles exercise',
-  'leg swings': 'leg swings dynamic stretch warmup',
-  'bodyweight squat': 'bodyweight squat exercise form',
-  "child's pose": 'childs pose yoga stretch',
-  'chest stretch': 'chest stretch pec stretch',
-  'hamstring stretch': 'hamstring stretch exercise',
-  'hip flexor': 'hip flexor stretch exercise',
-  'cat-cow': 'cat cow yoga spine stretch',
-  'knee to chest': 'knee to chest stretch lower back',
-  'pelvic tilt': 'pelvic tilt core exercise',
-  'bird dog': 'bird dog exercise core stability',
-  'piriformis': 'piriformis stretch glute exercise',
-  'easy walk': 'walking exercise fitness',
-};
+// Exercise → best search query mapping
+const QUERIES: [string[], string][] = [
+  // CHEST
+  [['bench press flat','db bench press','dumbbell bench press'], 'dumbbell bench press exercise'],
+  [['incline press','incline bench'],                            'incline dumbbell press chest'],
+  [['chest fly','dumbbell fly'],                                 'dumbbell chest fly pec workout'],
+  [['decline press'],                                            'decline dumbbell press chest workout'],
+  [['close-grip press','close grip'],                            'close grip dumbbell press tricep'],
+  // BACK
+  [['pull-up','pullup','pull up'],                               'pull up exercise back workout'],
+  [['chin-up','chinup','chin up'],                               'chin up exercise bicep back'],
+  [['bent-over row','bent over row'],                            'dumbbell bent over row back workout'],
+  [['single-arm row','single arm row','one arm row'],            'one arm dumbbell row back exercise'],
+  [['reverse fly'],                                              'dumbbell reverse fly rear delt'],
+  // SHOULDERS
+  [['overhead press','shoulder press'],                          'dumbbell overhead shoulder press'],
+  [['lateral raise'],                                            'dumbbell lateral raise shoulder'],
+  [['front raise'],                                              'dumbbell front raise shoulder workout'],
+  [['arnold press'],                                             'arnold press dumbbell shoulder'],
+  // LEGS
+  [['goblet squat'],                                             'goblet squat dumbbell legs workout'],
+  [['romanian deadlift','rdl'],                                  'romanian deadlift dumbbell hamstring'],
+  [['walking lunge','dumbbell lunge'],                           'dumbbell walking lunge legs workout'],
+  [['calf raise','calf'],                                        'calf raise standing exercise legs'],
+  [['split squat','bulgarian'],                                  'bulgarian split squat dumbbell legs'],
+  // BICEPS
+  [['bicep curl','biceps curl','dumbbell curl','standing curl'], 'dumbbell bicep curl workout'],
+  [['hammer curl'],                                              'hammer curl dumbbell bicep workout'],
+  [['concentration curl'],                                       'concentration curl dumbbell bicep'],
+  [['incline curl'],                                             'incline dumbbell curl bicep workout'],
+  [['zottman curl'],                                             'zottman curl dumbbell exercise'],
+  // TRICEPS
+  [['overhead tricep','overhead extension'],                     'overhead tricep extension dumbbell'],
+  [['tricep kickback','kickback'],                               'tricep kickback dumbbell workout'],
+  [['skull crusher'],                                            'skull crusher dumbbell tricep'],
+  // FOREARMS
+  [['wrist curl'],                                               'wrist curl forearm dumbbell exercise'],
+  [['wrist extension'],                                          'wrist extension forearm exercise'],
+  [['reverse curl'],                                             'reverse curl dumbbell forearm'],
+  [["farmer's carry","farmers carry","farmers walk"],            'farmers walk grip strength exercise'],
+  // ABS
+  [['wood chop'],                                                'wood chop exercise core rotation'],
+  [['side bend'],                                                'side bend dumbbell oblique workout'],
+  [['russian twist'],                                            'russian twist core ab workout'],
+  [['windmill'],                                                 'dumbbell windmill core exercise'],
+  [['halo'],                                                     'kettlebell halo core shoulder exercise'],
+  [['overhead crunch','standing crunch'],                        'standing oblique crunch exercise'],
+  [['leg raise','knee raise'],                                   'hanging leg raise abs workout'],
+  [['plank'],                                                    'plank core exercise abs'],
+  [['bicycle crunch'],                                           'bicycle crunch ab workout'],
+  [['mountain climber'],                                         'mountain climbers core exercise'],
+  [['dead bug'],                                                 'dead bug exercise core stability'],
+  [['hollow hold','hollow body'],                                'hollow body hold exercise'],
+  [['v-sit','v sit'],                                            'v sit exercise abs core'],
+  // WARMUP
+  [['arm circle'],                                               'arm circles warmup stretch exercise'],
+  [['shoulder roll'],                                            'shoulder rolls warmup mobility'],
+  [['hip circle','hip rotation'],                                'hip circles mobility warmup'],
+  [['leg swing'],                                                'leg swings dynamic stretch warmup'],
+  [['bodyweight squat','air squat'],                             'bodyweight squat form exercise'],
+  [['cat-cow','cat cow'],                                        'cat cow yoga spine stretch'],
+  [['doorway stretch','chest open'],                             'chest stretch doorway warmup'],
+  [['thread the needle'],                                        'thread the needle stretch spine'],
+  [['hip flexor stretch','pigeon'],                              'hip flexor stretch mobility'],
+  [['wrist circle'],                                             'wrist circles warmup forearm'],
+  [['ankle circle'],                                             'ankle circles warmup mobility'],
+  [['glute bridge'],                                             'glute bridge warmup activation'],
+  [['band pull apart','shoulder dislocate'],                     'band pull apart shoulder warmup'],
+  [['thoracic rotation','t-spine'],                              'thoracic spine rotation stretch'],
+  [['inchworm'],                                                 'inchworm exercise warmup'],
+  [['world greatest stretch','world greatest'],                  'world greatest stretch mobility'],
+  // COOLDOWN / STRETCHES
+  [["child's pose",'childs pose'],                               'childs pose yoga back stretch'],
+  [['chest stretch'],                                            'chest stretch wall pec stretch'],
+  [['hamstring stretch'],                                        'hamstring stretch floor exercise'],
+  [['hip flexor'],                                               'hip flexor stretch lunge position'],
+  [['quad stretch'],                                             'quad stretch standing leg workout'],
+  [['piriformis'],                                               'piriformis stretch glute exercise'],
+  [['figure four','pigeon'],                                     'pigeon pose hip opener stretch'],
+  [['cobra stretch','upward dog'],                               'cobra pose yoga back stretch'],
+  [['seated twist'],                                             'seated spinal twist stretch yoga'],
+  // BACK PAIN
+  [['knee to chest'],                                            'knee to chest stretch lower back'],
+  [['pelvic tilt'],                                              'pelvic tilt exercise lower back'],
+  [['bird dog'],                                                 'bird dog exercise core stability'],
+  [['bridge'],                                                   'glute bridge exercise lower back'],
+  [['superman'],                                                 'superman exercise back strength'],
+  // MISC
+  [['easy walk','walking','active recovery'],                    'walking exercise fitness cardio'],
+];
 
-export function gifQuery(name: string): string {
-  const l = name.toLowerCase();
-  for (const [k, v] of Object.entries(Q)) {
-    if (l.includes(k)) return v;
+export function gifQuery(exerciseName: string): string {
+  const n = exerciseName.toLowerCase().trim();
+  for (const [keys, q] of QUERIES) {
+    for (const k of keys) if (n.includes(k)) return q;
   }
-  return `${name} exercise workout`;
+  return `${exerciseName} exercise workout fitness`;
 }
 
-export async function fetchGifUrl(query: string): Promise<string | null> {
+export async function fetchGifUrl(exerciseName: string): Promise<string | null> {
+  const q = gifQuery(exerciseName);
   try {
-    const r = await fetch(
-      `https://api.giphy.com/v1/gifs/search?api_key=${API_KEY}&q=${encodeURIComponent(query)}&limit=5&rating=pg&lang=en`
+    const res = await fetch(
+      `https://api.giphy.com/v1/gifs/search?api_key=${KEY}&q=${encodeURIComponent(q)}&limit=8&rating=pg&lang=en`,
+      { cache: 'force-cache' }
     );
-    const d = await r.json();
-    if (d.data?.length > 0) {
-      // Pick the one with most relevant title
-      const gif = d.data[0];
-      return gif.images?.fixed_height?.url ?? gif.images?.original?.url ?? null;
-    }
-    return null;
-  } catch {
-    return null;
-  }
+    const data = await res.json();
+    if (!data.data?.length) return null;
+    // Pick a deterministic result based on exercise name (not always the first)
+    const idx = exerciseName.length % Math.min(data.data.length, 5);
+    const gif = data.data[idx];
+    return gif?.images?.fixed_height?.url ?? gif?.images?.original?.url ?? null;
+  } catch { return null; }
 }

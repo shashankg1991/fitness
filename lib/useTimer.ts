@@ -1,72 +1,80 @@
 'use client';
 import { useState, useEffect, useRef, useCallback } from 'react';
 
+function createBeep(freq: number, dur: number, vol: number, type: OscillatorType = 'sine') {
+  if (typeof window === 'undefined') return;
+  try {
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    const ctx = new AudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = type;
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(vol, ctx.currentTime + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + dur + 0.05);
+    osc.onended = () => { try { ctx.close(); } catch {} };
+  } catch {}
+}
+
+export function playTickSound() { createBeep(880, 0.08, 0.35, 'sine'); }
+export function playLastThreeSound() { createBeep(1100, 0.12, 0.55, 'sine'); }
+export function playDoneSound() {
+  createBeep(660, 0.18, 0.5, 'sine');
+  setTimeout(() => createBeep(880, 0.18, 0.5, 'sine'), 170);
+  setTimeout(() => createBeep(1100, 0.25, 0.6, 'sine'), 340);
+}
+export function playRestEndSound() {
+  createBeep(440, 0.1, 0.4, 'square');
+  setTimeout(() => createBeep(880, 0.2, 0.5, 'square'), 120);
+}
+
 export function useTimer(initialSeconds: number, onComplete?: () => void) {
   const [seconds, setSeconds] = useState(initialSeconds);
   const [isRunning, setIsRunning] = useState(false);
   const [isDone, setIsDone] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const audioCtxRef = useRef<AudioContext | null>(null);
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
 
-  const playBeep = useCallback((freq = 880, dur = 0.15, vol = 0.4) => {
-    try {
-      if (typeof window === 'undefined') return;
-      if (!audioCtxRef.current) {
-        audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-      }
-      const ctx = audioCtxRef.current;
-      if (ctx.state === 'suspended') ctx.resume();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.frequency.value = freq;
-      osc.type = 'sine';
-      gain.gain.setValueAtTime(vol, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + dur);
-    } catch {}
-  }, []);
-
-  const playDone = useCallback(() => {
-    [660, 880, 1100].forEach((f, i) => setTimeout(() => playBeep(f, 0.25, 0.5), i * 130));
-  }, [playBeep]);
-
-  const playTick = useCallback(() => playBeep(440, 0.06, 0.2), [playBeep]);
+  const clear = () => { if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; } };
 
   useEffect(() => {
-    if (!isRunning) return;
+    if (!isRunning) { clear(); return; }
     intervalRef.current = setInterval(() => {
       setSeconds(s => {
-        if (s <= 4 && s > 1) playTick();
-        if (s <= 1) {
-          clearInterval(intervalRef.current!);
+        const next = s - 1;
+        if (next <= 3 && next > 0) playLastThreeSound();
+        else if (next > 3) playTickSound();
+        if (next <= 0) {
+          clear();
           setIsRunning(false);
           setIsDone(true);
-          playDone();
-          onCompleteRef.current?.();
+          playDoneSound();
+          setTimeout(() => onCompleteRef.current?.(), 50);
           return 0;
         }
-        return s - 1;
+        return next;
       });
     }, 1000);
-    return () => clearInterval(intervalRef.current!);
-  }, [isRunning, playTick, playDone]);
+    return clear;
+  }, [isRunning]);
 
   const start  = useCallback(() => { setIsDone(false); setIsRunning(true); }, []);
   const pause  = useCallback(() => setIsRunning(false), []);
   const toggle = useCallback(() => setIsRunning(r => !r), []);
   const reset  = useCallback((s?: number) => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
+    clear();
     setIsRunning(false);
     setIsDone(false);
     setSeconds(s ?? initialSeconds);
   }, [initialSeconds]);
 
-  return { seconds, isRunning, isDone, start, pause, toggle, reset, playBeep };
+  return { seconds, isRunning, isDone, start, pause, toggle, reset };
 }
 
 export function formatTime(s: number): string {
