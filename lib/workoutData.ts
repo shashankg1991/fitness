@@ -551,3 +551,154 @@ export const PPL_SPLIT: DayWorkout[] = [
           mistakes:['Going too fast — should feel effortless','Skipping — movement aids recovery significantly']},
       ]}, COOLDOWN, BACK_PAIN ] },
 ];
+
+// ── TRAVEL WARMUP (band-friendly, no equipment needed) ───────────────────────
+const TRAVEL_WARMUP: WorkoutSection = {
+  id:'warmup', title:'Pre-Workout Warmup', icon:'🌅', color:'#F5C842',
+  exercises:[
+    {id:'tw1',name:'Arm Circles',sets:1,reps:'15 forward + 15 back',rest:10,
+      how:'Stand tall. Progressive circles from small to full range. Warms shoulder and rotator cuff.',
+      mistakes:['Skipping small circles — build up','Shrugging shoulders']},
+    {id:'tw2',name:'Hip Circles',sets:1,reps:'12 each direction',rest:10,
+      how:'Hands on hips. Large circles warming hip flexors and glutes — essential before band leg work.',
+      mistakes:['Small circles — make them as big as possible']},
+    {id:'tw3',name:'Leg Swings',sets:1,reps:'12 each leg each direction',rest:10,
+      how:'Hold wall/door for balance. Forward/back 12 times, then side-to-side 12 times. Opens hip joint.',
+      mistakes:['No support — you need something to hold']},
+    {id:'tw4',name:'Inchworm',sets:1,reps:'6 reps',rest:15,
+      how:'Hinge, walk hands to plank, do 1 push-up, walk hands back. Activates the whole body.',
+      mistakes:['Hips sagging in plank']},
+    {id:'tw5',name:'Cat-Cow Spine',sets:1,reps:'10 slow breaths',rest:10,
+      how:'On all fours. Arch down on inhale (cow), round up on exhale (cat). One breath per rep.',
+      mistakes:['Rushing — one full breath each rep']},
+    {id:'tw6',name:'Thoracic Rotation',sets:1,reps:'8 each side',rest:10,
+      how:'Sit or kneel. Hand behind head. Rotate elbow toward ceiling, opening the chest. Hold 2 sec.',
+      mistakes:['Rotating from hips — movement is from mid-back']},
+  ]
+};
+
+// ── RESISTANCE BAND SPLIT — Full body, 5 days, travel-friendly ───────────────
+// Equipment: 1–3 resistance bands (light/medium/heavy), doorframe anchor (optional)
+// Bands available in any hotel — fits in a carry-on pocket
+
+export const BAND_SPLIT: DayWorkout[] = [
+  { day:1, muscle:'Upper Body Push', badge:'DAY 1', color:'#FF6B35',
+    sections:[ TRAVEL_WARMUP,
+      { id:'main', title:'Band Push — Chest & Shoulders', icon:'💪', color:'#FF6B35', exercises:[
+        {id:'bp1',name:'Band Push-up',sets:3,reps:'15–20',rest:60,
+          how:'Loop band across your back, hold ends in each hand, perform push-ups. The band adds resistance at the top where push-ups are easiest. Full range — chest to floor.',
+          mistakes:['Hips sagging — rigid plank throughout','Band slipping — hold it under the heel of your hands']},
+        {id:'bp2',name:'Band Chest Press (Wall or Door)',sets:3,reps:'15',rest:60,
+          how:'Anchor band at chest height behind you (in door hinge). Hold ends, arms forward at chest. Step forward for tension. Press forward to full extension. Squeeze chest at the end.',
+          mistakes:['Standing too close — no tension at start','Elbows dipping below shoulder line']},
+        {id:'bp3',name:'Band Overhead Press',sets:3,reps:'12',rest:60,
+          how:'Stand on band with feet shoulder-width. Hold handles at shoulders, palms forward. Press straight overhead to full extension. Core braced throughout.',
+          mistakes:['Arching lower back — brace the core','Partial reps — go fully overhead']},
+        {id:'bp4',name:'Band Lateral Raise',sets:3,reps:'15',rest:45,
+          how:'Stand on band. Hold one handle in each hand at sides. Raise arms to shoulder height leading with elbows. Pause 1 sec. Lower slowly.',
+          mistakes:['Shrugging traps — pull shoulders down','Above shoulder height']},
+      ]}, ABS_BY_DAY[0], COOLDOWN, BACK_PAIN ] },
+
+  { day:2, muscle:'Upper Body Pull', badge:'DAY 2', color:'#34C759',
+    sections:[ TRAVEL_WARMUP,
+      { id:'main', title:'Band Pull — Back & Biceps', icon:'🏋️', color:'#34C759', exercises:[
+        {id:'bpull1',name:'Band Bent-over Row',sets:3,reps:'15',rest:60,
+          how:'Stand on band. Hinge at hips 45°, neutral spine. Hold both ends. Drive elbows back past hips. Squeeze shoulder blades at top. 3-sec negative.',
+          mistakes:['Rounding lower back','Jerking up with momentum','Elbows flaring wide']},
+        {id:'bpull2',name:'Band Face Pull',sets:3,reps:'20',rest:45,
+          how:'Anchor band at face height. Hold both ends, step back for tension. Pull toward face with elbows high and wide. Hands finish beside ears. Targets rear delts — critical for posture.',
+          mistakes:['Elbows dropping below shoulder line','Pulling to chin not face level']},
+        {id:'bpull3',name:'Band Bicep Curl',sets:3,reps:'15',rest:60,
+          how:'Stand on band, feet hip-width. Hold handles with underhand grip, elbows pinned to sides. Curl to full contraction, supinate at top. 3-sec negative.',
+          mistakes:['Elbows drifting forward — keep pinned','Not supinating — rotate palms fully up']},
+        {id:'bpull4',name:'Band Hammer Curl',sets:3,reps:'12',rest:60,
+          how:'Stand on band, neutral grip (palms facing each other) throughout. Curl. Targets brachialis for arm thickness. No wrist rotation.',
+          mistakes:['Rotating wrist during curl','Short range at the bottom']},
+      ]}, ABS_BY_DAY[1], COOLDOWN, BACK_PAIN ] },
+
+  { day:3, muscle:'Legs & Glutes', badge:'DAY 3', color:'#FFD60A',
+    sections:[ TRAVEL_WARMUP,
+      { id:'main', title:'Band Legs — Glutes, Quads & Hamstrings', icon:'🦵', color:'#FFD60A', exercises:[
+        {id:'bl1',name:'Band Squat',sets:3,reps:'20',rest:60,
+          how:'Stand on band, feet shoulder-width. Hold handles at shoulders (or cross band over shoulders). Squat deep — thighs parallel or below. Drive through heels. Band adds resistance throughout.',
+          mistakes:['Heels rising — wider stance or elevate slightly','Knees caving — push them out over toes','Partial squat — full depth']},
+        {id:'bl2',name:'Band Romanian Deadlift',sets:3,reps:'15',rest:60,
+          how:'Stand on band with both feet. Hold ends in hands. Hinge at hips, push hips back, lower hands along thighs until hamstring stretch. Drive hips forward to rise.',
+          mistakes:['Rounding lower back — most critical mistake','Bending knees too much — hip hinge not squat']},
+        {id:'bl3',name:'Band Glute Bridge',sets:3,reps:'20',rest:45,
+          how:'Lie on back, band across hips anchored by hands. Feet flat, knees bent. Drive hips to ceiling. Squeeze glutes hard for 2 sec at top. Lower slowly.',
+          mistakes:['Using lower back to push — squeeze glutes','Feet too far — shins should be vertical at top']},
+        {id:'bl4',name:'Band Lateral Walk (Crab Walk)',sets:3,reps:'15 each direction',rest:45,
+          how:'Band around ankles or just above knees. Half-squat position. Step sideways 15 steps right, then 15 left. Keep tension in band throughout — feet never touch.',
+          mistakes:['Standing up between steps — stay in half-squat','Feet coming together and releasing tension']},
+      ]}, ABS_BY_DAY[2], COOLDOWN, BACK_PAIN ] },
+
+  { day:4, muscle:'Arms & Shoulders', badge:'DAY 4', color:'#FF2D55',
+    sections:[ TRAVEL_WARMUP,
+      { id:'main', title:'Band Arms — Biceps, Triceps & Shoulders', icon:'💪', color:'#FF2D55', exercises:[
+        {id:'ba1',name:'Band Concentration Curl',sets:3,reps:'15 each arm',rest:45,
+          how:'Sit. Loop band under the same-side foot. Hold end with underhand grip, elbow on inner thigh as brace. Curl slowly to peak. Squeeze hard. Full extension at bottom.',
+          mistakes:['Thigh pushing the elbow — it is just a brace','Short range at the bottom']},
+        {id:'ba2',name:'Band Overhead Tricep Extension',sets:3,reps:'15',rest:45,
+          how:'Anchor band low (under foot or door). Hold end with both hands. Press overhead to full extension, then lower behind head bending only at elbows. Upper arms stay vertical.',
+          mistakes:['Elbows flaring out — they point forward','Moving upper arms — only elbows bend']},
+        {id:'ba3',name:'Band Tricep Pressdown',sets:3,reps:'15',rest:45,
+          how:'Anchor band at high point (top of door). Hold end, elbows at sides at 90°. Press down to full extension. Squeeze triceps at bottom. Elbows locked to sides throughout.',
+          mistakes:['Elbows drifting out from sides','Bending forward to use momentum']},
+        {id:'ba4',name:'Band Arnold Press',sets:3,reps:'12',rest:60,
+          how:'Stand on band. Hold handles at chin level, palms facing you. Rotate palms outward as you press overhead. Reverse on descent. Full rotation every rep.',
+          mistakes:['Rushing the rotation — slow and deliberate','Partial range of motion']},
+      ]}, ABS_BY_DAY[3], COOLDOWN, BACK_PAIN ] },
+
+  { day:5, muscle:'Full Body', badge:'DAY 5', color:'#AF52DE',
+    sections:[ TRAVEL_WARMUP,
+      { id:'main', title:'Band Full Body — Compound Circuit', icon:'🔥', color:'#AF52DE', exercises:[
+        {id:'bfb1',name:'Band Squat to Press',sets:3,reps:'12',rest:75,
+          how:'Stand on band, handles at shoulders. Squat deep. As you stand, press handles overhead explosively. Complete the squat FIRST, then press. This works legs, core, and shoulders together.',
+          mistakes:['Pressing before standing — complete the squat first','Lower back arching during the press']},
+        {id:'bfb2',name:'Band Deadlift',sets:3,reps:'15',rest:60,
+          how:'Stand on band, feet hip-width. Hinge and hold band ends beside feet. Drive through heels and thrust hips forward to standing. Full hip extension at top. Slow hinge back down.',
+          mistakes:['Rounding back — maintain neutral spine throughout','Jerking up — smooth powerful drive']},
+        {id:'bfb3',name:'Band Bent-over Row + Curl Combo',sets:3,reps:'12',rest:60,
+          how:'Hinge at hips. Perform one bent-over row (elbows back), then at the top position curl both hands to shoulders. Lower under control. One row + one curl = one rep.',
+          mistakes:['Straightening up during the curl — stay hinged','Rushing — full range on both movements']},
+        {id:'bfb4',name:'Band Squat to Lateral Raise',sets:3,reps:'10',rest:60,
+          how:'Stand on band. Squat. As you stand, raise both arms to shoulder height (lateral raise). Lower arms as you descend into next squat. Combines leg drive with shoulder isolation.',
+          mistakes:['Raising arms before fully standing','Shrugging traps on the raise']},
+      ]}, ABS_BY_DAY[4], COOLDOWN, BACK_PAIN ] },
+
+  { day:6, muscle:'Lower Body Burn', badge:'DAY 6', color:'#30D158',
+    sections:[ TRAVEL_WARMUP,
+      { id:'main', title:'Band Lower Body — Legs & Core', icon:'🦵', color:'#30D158', exercises:[
+        {id:'blb1',name:'Band Split Squat',sets:3,reps:'12 each leg',rest:60,
+          how:'Back foot on bed or chair. Front foot far forward. Band across front thigh anchored to hands. Lower until front thigh is parallel. Drive through front heel to rise.',
+          mistakes:['Front foot too close — knee shoots past toes','Dropping too fast — 2-3 sec controlled descent']},
+        {id:'blb2',name:'Band Donkey Kick',sets:3,reps:'20 each leg',rest:45,
+          how:'On all fours. Band looped around one foot, hold ends in hands. Kick foot toward ceiling, squeezing glute at the top. Return under control. Hip extension isolates the glute.',
+          mistakes:['Rotating the hip outward — kick straight up','Using momentum — controlled movement only']},
+        {id:'blb3',name:'Band Clamshell',sets:3,reps:'20 each side',rest:30,
+          how:'Lie on side, band just above knees. Knees bent 90°. Keeping feet together, open top knee toward ceiling like a clamshell. Squeeze glute med at top. Slow return.',
+          mistakes:['Hips rolling backward — stay stacked','Short range — open as far as possible']},
+        {id:'blb4',name:'Band Standing Kickback',sets:3,reps:'15 each leg',rest:45,
+          how:'Stand. Band around ankles. Hold wall for balance. Kick one leg straight back, squeezing glute at the top. Slow return. Keep upper body still throughout.',
+          mistakes:['Leaning forward with the kick — stand tall','Bending the knee — leg stays straight throughout']},
+      ]}, ABS_BY_DAY[5], COOLDOWN, BACK_PAIN ] },
+
+  { day:7, muscle:'Active Rest', badge:'DAY 7', color:'#636366',
+    sections:[
+      { id:'warmup', title:'Light Mobility', icon:'🌅', color:'#F5C842', exercises:[
+        ...BACK_WARMUP_EXERCISES,
+        {id:'tr_h1',name:'Hip Circles',sets:1,reps:'12 each direction',rest:10,
+          how:'Hands on hips. Large circles. Both directions.',
+          mistakes:['Small circles — bigger is better']},
+        {id:'tr_ls1',name:'Leg Swings',sets:1,reps:'10 each leg each direction',rest:10,
+          how:'Hold wall. Forward/back and side-to-side. Open the hip joint.',
+          mistakes:['Swinging too forcefully']},
+      ]},
+      { id:'main', title:'Active Recovery', icon:'🌿', color:'#636366', exercises:[
+        {id:'tr_ar1',name:'20–30 Min Easy Walk',sets:1,duration:1200,rest:0,
+          how:'Walk around the hotel, outside, or on treadmill. Light pace. Aids muscle recovery.',
+          mistakes:['Going too fast — easy pace only']},
+      ]}, COOLDOWN, BACK_PAIN ]
+  },
+];
